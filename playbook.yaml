@@ -1,0 +1,131 @@
+---
+- name: Ensure hosts are reachable
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+
+- name: Update Amazon Linux packages
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Update all packages to the latest version
+      yum:
+        name: '*'
+        state: latest
+
+- name: Install WireGuard and configure basic server
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install WireGuard package
+      yum:
+        name: wireguard-tools
+        state: present
+
+    - name: Load WireGuard kernel module
+      modprobe:
+        name: wireguard
+      become: true
+
+    - name: Ensure WireGuard module is loaded on boot
+      modprobe:
+        name: wireguard
+        state: present
+      become: true
+
+    - name: Generate WireGuard server keys
+      command: "wg genkey"
+      register: server_private_key
+      changed_when: false
+
+    - name: Generate WireGuard server public key
+      shell: "echo {{ server_private_key.stdout }} | wg pubkey"
+      register: server_public_key
+      changed_when: false
+
+    - name: Generate WireGuard client keys
+      command: "wg genkey"
+      register: client_private_key
+      changed_when: false
+
+    - name: Generate WireGuard client public key
+      shell: "echo {{ client_private_key.stdout }} | wg pubkey"
+      register: client_public_key
+      changed_when: false
+
+    - name: Create WireGuard server configuration file
+      template:
+        src: wireguard-server.conf.j2
+        dest: /etc/wireguard/wg0.conf
+        owner: root
+        group: root
+        mode: '0600'
+      notify:
+        - Start WireGuard
+    
+    - name: Save client private key to a file
+      copy:
+        dest: /etc/wireguard/client_private_key.txt
+        content: "{{ client_private_key.stdout }}"
+        owner: root
+        group: root
+        mode: '0400'
+    
+    - name: Save server public key to a file
+      copy:
+        dest: /etc/wireguard/server_public_key.txt
+        content: "{{ server_public_key.stdout }}"
+        owner: root
+        group: root
+        mode: '0400'
+    
+    - name: Fetch server IP address
+      command: "curl -s ipinfo.io/ip"
+      register: server_ip
+      changed_when: false
+
+  handlers:
+    - name: Start WireGuard
+      service:
+        name: "wg-quick@wg0"
+        state: started
+        enabled: yes
+
+    - name: Enable IP forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: 1
+        sysctl_set: yes
+        state: present
+
+    - name: Save IP forwarding configuration
+      copy:
+        dest: /etc/sysctl.d/wg.conf
+        content: "net.ipv4.ip_forward = 1\n"
+      notify:
+        - Reload sysctl
+
+    - name: Reload sysctl settings
+      command: sysctl --system
+    
+- name: Create local client configuration file
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Generate client configuration file
+      template:
+        src: client_config.conf.j2
+        dest: /path/to/local/client_config.conf
+        mode: '0600'
+        vars:
+          server_public_key: "{{ server_public_key.stdout }}"
+          server_ip: "{{ server_ip.stdout }}"
+
+    - debug:
+        msg: "Client configuration file generated at /path/to/local/client_config.conf"
