@@ -12,27 +12,27 @@ This project uses Terraform to provision an EC2 instance in AWS and Ansible to c
 
 1. Clone the repository:
 
-\```
+```
 git clone https://github.com/RealFireAU/wireguardproxy.git
-cd aws-wireguard-proxy
-\```
+cd wireguardproxy
+```
 
 2. Configure Terraform with your AWS credentials.
 
-3. Customize the Terraform variables in `variables.tf` according to your requirements, such as the AWS region, instance type, and port to forward.
+3. Customize the Terraform variables in `variables.tf` according to your requirements, such as the AWS region, instance type, and port to forward. [TODO]
 
 4. Initialize Terraform:
 
-\```
+```
 terraform init
-\```
+```
 
 5. Plan and apply the Terraform configuration:
 
-\```
+```
 terraform plan
 terraform apply
-\```
+```
 
 This will create an EC2 instance and run the ansible playbook
 
