@@ -5,7 +5,9 @@ provider "registry.terraform.io/ansible/ansible" {
   version     = "1.2.0"
   constraints = "~> 1.2.0"
   hashes = [
+    "h1:+FFI791dQLSgrP3ldRPckp6kKHKPByGlZnZHSKEIk9M=",
     "h1:+pXjJL8xLEJGqkw2H5c99p5Umb6av45W7duaJmwRYcQ=",
+    "h1:vbkaBXdvHeGZIPQOwAvRduIT0Cqqg7nNljzAx7nAHgk=",
     "zh:06ec85f5c8809eebd7049846d3a45e5c4d052f021fd0a93681d72da8db18f03c",
     "zh:13a289fbc8ba46b4a81aae5548d0f4b7c772e60b5597493be1a2f36f1642252f",
     "zh:1e345d4dd6cdff194c5878a986d00494dfe4d51e5f05a85fa37243acada4ac98",
@@ -29,6 +31,8 @@ provider "registry.terraform.io/hashicorp/aws" {
   constraints = "5.47.0"
   hashes = [
     "h1:T0tupfn2Ubj18Y7xmO0pFMvti1Qns2K6EGXenR6Hg30=",
+    "h1:YwFs04Ji9DNgFPsPzcI063GaAHSGWAjwza4hmRJ4/4s=",
+    "h1:bZEm2TDCM7jmpNXK6QOWsT1YU8GiGGQaraUvwO887U8=",
     "zh:06037a14e47e8f82d0b3b326cd188566272b808b7970a9249a11db26d475b83d",
     "zh:116b7dd58ca964a1056249d2b6550f399b0a6bc9a7920b7ee134242114432c9f",
     "zh:1aa089c81459071c1d65ba7454f1122159e1fa1b5384e6e9ef85c8264f8a9ecb",
@@ -52,6 +56,8 @@ provider "registry.terraform.io/hashicorp/local" {
   constraints = "2.5.1"
   hashes = [
     "h1:/GAVA/xheGQcbOZEq0qxANOg+KVLCA7Wv8qluxhTjhU=",
+    "h1:8oTPe2VUL6E2d3OcrvqyjI4Nn/Y/UEQN26WLk5O/B0g=",
+    "h1:Np4kERf9SMrqUi7DJ1rK3soMK14k49nfgE7l/ipQ5xw=",
     "zh:0af29ce2b7b5712319bf6424cb58d13b852bf9a777011a545fac99c7fdcdf561",
     "zh:126063ea0d79dad1f68fa4e4d556793c0108ce278034f101d1dbbb2463924561",
     "zh:196bfb49086f22fd4db46033e01655b0e5e036a5582d250412cc690fa7995de5",
@@ -71,6 +77,8 @@ provider "registry.terraform.io/hashicorp/tls" {
   version     = "4.0.5"
   constraints = "4.0.5"
   hashes = [
+    "h1:e4LBdJoZJNOQXPWgOAG0UuPBVhCStu98PieNlqJTmeU=",
+    "h1:jb/Rg9inGYp4t8HtBoETESsQJgdmOHoe1bzzg2uNB3w=",
     "h1:zeG5RmggBZW/8JWIVrdaeSJa0OG62uFX5HY1eE8SjzY=",
     "zh:01cfb11cb74654c003f6d4e32bbef8f5969ee2856394a96d127da4949c65153e",
     "zh:0472ea1574026aa1e8ca82bb6df2c40cd0478e9336b7a8a64e652119a2fa4f32",
