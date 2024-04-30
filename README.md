@@ -44,6 +44,7 @@ This will create an EC2 instance and run the ansible playbook
 
 - `variables.tf`: Define Terraform variables for customization.
 - `main.tf`: Terraform configuration for creating the EC2 instance.
-- `playbook.yml`: Ansible playbook for configuring WireGuard and port forwarding.
-- `roles/wireguard/tasks/main.yml`: Ansible tasks for setting up WireGuard. [TODO]
-- `roles/portforwarding/tasks/main.yml`: Ansible tasks for configuring iptables port forwarding. [TODO]
+- `providers.tf`: Defines the providers used in this Terraform code.
+- `playbook.yml`: Ansible playbook for configuring WireGuard and port forwarding and provides client config in `./out/client.conf`
+- `roles/wireguard/tasks/main.yml`: Ansible tasks for setting up WireGuard.
+- `roles/portforwarding/tasks/main.yml`: Ansible tasks for configuring iptables port forwarding.

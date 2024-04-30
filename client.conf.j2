@@ -2,6 +2,6 @@
 PrivateKey = {{ client_private_key.stdout }}
 
 [Peer]
-PublicKey = {{ server_public_key }}
+PublicKey = {{ server_public_key.stdout }}
 AllowedIPs = 10.254.0.1/32
-Endpoint = {{ server_ip }}:51820
+Endpoint = {{ server_ip.stdout }}:51820

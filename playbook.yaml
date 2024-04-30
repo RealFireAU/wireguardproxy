@@ -1,7 +1,7 @@
 ---
 - name: Ensure hosts are reachable
   hosts: all
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     - name: Wait for system to become reachable
@@ -9,8 +9,8 @@
 
 - name: Update Amazon Linux packages
   hosts: all
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   tasks:
     - name: Update all packages to the latest version
@@ -20,12 +20,17 @@
 
 - name: Install WireGuard and configure basic server
   hosts: all
-  become: yes
+  become: true
 
   tasks:
     - name: Install WireGuard package
       yum:
         name: wireguard-tools
+        state: present
+    
+    - name: Install iptables package
+      yum:
+        name: iptables-services
         state: present
 
     - name: Load WireGuard kernel module
@@ -90,6 +95,51 @@
       register: server_ip
       changed_when: false
 
+    - name: Create WireGuard client configuration file
+      template:
+        src: client.conf.j2
+        dest: /etc/wireguard/client.conf
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Fetch client configuration file
+      fetch:
+        src: /etc/wireguard/client.conf
+        dest: ./out/client.conf
+        flat: true
+
+- name: Configure iptables rules
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Allow SSH (port 22) in iptables
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        port: 22
+        jump: ACCEPT
+      become: true
+
+    - name: Forward port 25565 TCP to 10.254.0.1
+      iptables:
+        chain: PREROUTING
+        table: nat
+        in_interface: enX0  # Specify the incoming interface name
+        out_interface: wg0  # Specify the outgoing interface name
+        protocol: tcp
+        port: 25565
+        jump: DNAT
+        to_destination: 10.254.0.1:25565
+      become: true
+
+    - name: Save iptables rules
+      service:
+        name: iptables
+        state: started
+        enabled: yes
+
   handlers:
     - name: Start WireGuard
       service:
@@ -113,19 +163,3 @@
 
     - name: Reload sysctl settings
       command: sysctl --system
-    
-- name: Create local client configuration file
-  hosts: localhost
-  connection: local
-  tasks:
-    - name: Generate client configuration file
-      template:
-        src: client_config.conf.j2
-        dest: /path/to/local/client_config.conf
-        mode: '0600'
-        vars:
-          server_public_key: "{{ server_public_key.stdout }}"
-          server_ip: "{{ server_ip.stdout }}"
-
-    - debug:
-        msg: "Client configuration file generated at /path/to/local/client_config.conf"
